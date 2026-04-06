@@ -7,9 +7,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Serve static frontend files
+app.use(express.static(__dirname));
+
 // Supabase Connection
-const supabaseUrl = 'https://tfhekwhubbdsgjbcjpxf.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmaGVrd2h1YmJkc2dqYmNqcHhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NzE3NDMsImV4cCI6MjA5MTA0Nzc0M30.9zv-0Hx3BexgXlKVJnMXFUS1MsZaY4PDT4UDJWTYEC4';
+const supabaseUrl = process.env.SUPABASE_URL || 'https://tfhekwhubbdsgjbcjpxf.supabase.co';
+const supabaseKey = process.env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmaGVrd2h1YmJkc2dqYmNqcHhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NzE3NDMsImV4cCI6MjA5MTA0Nzc0M30.9zv-0Hx3BexgXlKVJnMXFUS1MsZaY4PDT4UDJWTYEC4';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 console.log('Initialized Supabase Client');
@@ -76,4 +79,5 @@ app.get('/api/feedback', async (req, res) => {
     res.json(feedback);
 });
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

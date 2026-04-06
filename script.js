@@ -30,7 +30,7 @@ async function placeOrder() {
     tableNumber = parseInt(tableInput);
 
     try {
-        const response = await fetch('http://localhost:3000/api/orders', {
+        const response = await fetch('/api/orders', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ tableNumber, items: cart, total, discount })
@@ -289,7 +289,7 @@ async function submitFeedback(event) {
     }
 
     try {
-        const response = await fetch('http://localhost:3000/api/feedback', {
+        const response = await fetch('/api/feedback', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, rating: parseInt(rating), comments })
@@ -309,7 +309,7 @@ async function submitFeedback(event) {
 
 async function loadFeedbackHistory() {
     try {
-        const response = await fetch('http://localhost:3000/api/feedback');
+        const response = await fetch('/api/feedback');
         const feedback = await response.json();
         const historyDiv = document.getElementById('feedback-history');
         if (historyDiv) {
