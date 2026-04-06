@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
@@ -11,8 +12,8 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 // Supabase Connection
-const supabaseUrl = process.env.SUPABASE_URL || 'https://tfhekwhubbdsgjbcjpxf.supabase.co';
-const supabaseKey = process.env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmaGVrd2h1YmJkc2dqYmNqcHhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NzE3NDMsImV4cCI6MjA5MTA0Nzc0M30.9zv-0Hx3BexgXlKVJnMXFUS1MsZaY4PDT4UDJWTYEC4';
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 console.log('Initialized Supabase Client');
