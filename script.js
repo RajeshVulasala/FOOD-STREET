@@ -36,7 +36,7 @@ async function placeOrder() {
             body: JSON.stringify({ tableNumber, items: cart, total, discount })
         });
         const result = await response.json();
-        alert(`Order placed successfully for Table ${tableNumber}! Order ID: ${result.order._id}`);
+        alert(`Order placed successfully for Table ${tableNumber}! Order ID: ${result.order.id}`);
         showSection('game-selection');
     } catch (error) {
         console.error('Error saving order:', error);

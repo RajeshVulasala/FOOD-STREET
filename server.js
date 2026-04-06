@@ -1,60 +1,78 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
+const { createClient } = require('@supabase/supabase-js');
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
-mongoose.connect('mongodb://localhost:27017/foodstreet')
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err));
+// Supabase Connection
+const supabaseUrl = 'https://tfhekwhubbdsgjbcjpxf.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmaGVrd2h1YmJkc2dqYmNqcHhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NzE3NDMsImV4cCI6MjA5MTA0Nzc0M30.9zv-0Hx3BexgXlKVJnMXFUS1MsZaY4PDT4UDJWTYEC4';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Order Schema
-const orderSchema = new mongoose.Schema({
-    tableNumber: Number,
-    items: [{ item: String, price: Number }],
-    total: Number,
-    discount: Number,
-    timestamp: { type: Date, default: Date.now }
-});
-const Order = mongoose.model('Order', orderSchema);
-
-// Feedback Schema
-const feedbackSchema = new mongoose.Schema({
-    name: String,
-    rating: Number,
-    comments: String,
-    timestamp: { type: Date, default: Date.now }
-});
-const Feedback = mongoose.model('Feedback', feedbackSchema);
+console.log('Initialized Supabase Client');
 
 // API to Save an Order
 app.post('/api/orders', async (req, res) => {
     const { tableNumber, items, total, discount } = req.body;
-    const order = new Order({ tableNumber, items, total, discount });
-    await order.save();
+    
+    const { data: order, error } = await supabase
+        .from('orders')
+        .insert([{ tablenumber: tableNumber, items, total, discount }])
+        .select()
+        .single();
+        
+    if (error) {
+        console.error('Error saving order:', error);
+        return res.status(500).json({ error: 'Failed to save order' });
+    }
+    
     res.json({ message: 'Order saved successfully', order });
 });
 
 // API to Get All Orders
 app.get('/api/orders', async (req, res) => {
-    const orders = await Order.find();
+    const { data: orders, error } = await supabase
+        .from('orders')
+        .select('*');
+        
+    if (error) {
+        return res.status(500).json({ error: 'Failed to fetch orders' });
+    }
+    
     res.json(orders);
 });
 
 // API to Save Feedback
 app.post('/api/feedback', async (req, res) => {
     const { name, rating, comments } = req.body;
-    const feedback = new Feedback({ name, rating, comments });
-    await feedback.save();
+    
+    const { data: feedback, error } = await supabase
+        .from('feedback')
+        .insert([{ name, rating, comments }])
+        .select()
+        .single();
+        
+    if (error) {
+        console.error('Error saving feedback:', error);
+        return res.status(500).json({ error: 'Failed to save feedback' });
+    }
+    
     res.json({ message: 'Feedback saved successfully', feedback });
 });
 
 // API to Get All Feedback
 app.get('/api/feedback', async (req, res) => {
-    const feedback = await Feedback.find();
+    const { data: feedback, error } = await supabase
+        .from('feedback')
+        .select('*');
+        
+    if (error) {
+        return res.status(500).json({ error: 'Failed to fetch feedback' });
+    }
+    
     res.json(feedback);
 });
 
